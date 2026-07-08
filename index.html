@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRie Lagoinha Sydney | Diretório da Comunidade</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --dark:#2D2D2D;
+  --body-bg:#F4F2EF;
+  --card-bg:#FFFFFF;
+  --text:#1A1A1A;
+  --text-mid:#5C5C5C;
+  --text-light:#8E8E93;
+  --border:rgba(0,0,0,0.07);
+  --accent:#2B7A5F;
+  --accent-light:rgba(43,122,95,0.08);
+  --accent-tag:#E8F5EF;
+  --warm:#D4854A;
+  --warm-tag:#FFF3E8;
+  --success:#2B7A5F;
+  --danger:#D44332;
+  --radius:14px;
+  --radius-sm:10px;
+}
+
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+.header{background:#FAFAFA;text-align:center;padding:40px 24px 36px;border-bottom:1px solid var(--border)}
+.header-logo{width:260px;margin:0 auto 14px;display:block}
+.header-desc{max-width:460px;margin:0 auto;font-size:14px;color:var(--text-mid);line-height:1.6}
+
+.nav-tabs{display:flex;justify-content:center;gap:4px;padding:16px 24px 12px;position:sticky;top:0;z-index:100;background:var(--body-bg);border-bottom:1px solid var(--border)}
+.nav-tab{padding:10px 32px;border-radius:40px;border:none;background:transparent;color:var(--text-mid);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{background:var(--dark);color:#fff}
+
+.section{display:none;padding:28px 24px 64px;max-width:1100px;margin:0 auto}
+.section.active{display:block}
+
+.rules-box{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:24px;overflow:hidden}
+.rules-header{display:flex;align-items:center;gap:10px;padding:16px 20px;cursor:pointer;user-select:none;transition:background 0.15s}
+.rules-header:hover{background:rgba(0,0,0,0.02)}
+.rules-icon{font-size:18px}
+.rules-title{flex:1;font-size:14px;font-weight:700;color:var(--text)}
+.rules-arrow{font-size:14px;color:var(--text-light);transition:transform 0.25s}
+.rules-arrow.collapsed{transform:rotate(-90deg)}
+.rules-content{padding:0 20px 20px;display:block}
+.rules-content.hidden{display:none}
+.rules-section{margin-bottom:16px}
+.rules-section:last-child{margin-bottom:0}
+.rules-section-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px}
+.rules-list p{font-size:13px;color:var(--text-mid);line-height:1.6;margin-bottom:6px;padding-left:4px}
+.rules-list p:last-child{margin-bottom:0}
+
+.directory-header{margin-bottom:24px}
+.directory-title{font-size:22px;font-weight:800;margin-bottom:4px}
+.member-count{font-size:13px;color:var(--text-light);font-weight:500}
+
+.search-bar{position:relative;margin-top:16px;max-width:420px}
+.search-bar input{width:100%;padding:12px 16px 12px 44px;background:var(--card-bg);border:1.5px solid var(--border);border-radius:40px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color 0.2s}
+.search-bar input:focus{border-color:var(--accent)}
+.search-bar input::placeholder{color:var(--text-light)}
+.search-bar svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:0.3}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:24px}
+
+.member-card{background:var(--card-bg);border-radius:var(--radius);padding:22px;border:1px solid var(--border);transition:transform 0.2s,box-shadow 0.2s;cursor:pointer}
+.member-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+
+.card-top{display:flex;gap:14px;margin-bottom:14px}
+.card-avatar{width:52px;height:52px;border-radius:50%;background:var(--accent-light);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--accent)}
+.card-avatar img{width:100%;height:100%;object-fit:cover}
+.card-info{flex:1;min-width:0}
+.card-name{font-size:16px;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-role{font-size:13px;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.card-tag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;background:var(--accent-tag);color:var(--accent)}
+.card-tag.warm{background:var(--warm-tag);color:var(--warm)}
+
+.card-detail{font-size:13px;color:var(--text-mid);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.card-footer{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-light)}
+.card-footer a{color:var(--accent);text-decoration:none;font-weight:600}
+.card-footer a:hover{text-decoration:underline}
+
+.loading-state{text-align:center;padding:80px 24px;color:var(--text-light)}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.empty-state{text-align:center;padding:60px 24px;background:var(--card-bg);border-radius:var(--radius);border:1px dashed rgba(0,0,0,0.12);margin-top:20px}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:0.3}
+.empty-title{font-size:17px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.empty-desc{font-size:14px;color:var(--text-mid);margin-bottom:20px;line-height:1.5}
+.empty-btn{display:inline-block;padding:12px 28px;background:var(--accent);color:#fff;border:none;border-radius:40px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity 0.2s}
+.empty-btn:hover{opacity:0.85}
+
+.form-container{max-width:600px;margin:0 auto}
+.form-title{font-size:22px;font-weight:800;margin-bottom:4px}
+.form-desc{color:var(--text-mid);font-size:14px;margin-bottom:28px;line-height:1.5}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--text-mid);margin-bottom:5px}
+.form-label .req{color:var(--danger)}
+
+.form-input,.form-select,.form-textarea{width:100%;padding:13px 14px;background:var(--card-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:15px;transition:border-color 0.2s;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-light)}
+.form-select{cursor:pointer}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+.form-section-label{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:2px;margin-bottom:18px}
+
+.photo-upload{display:flex;align-items:center;gap:16px}
+.photo-preview{width:72px;height:72px;border-radius:50%;background:var(--accent-light);border:2px dashed rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer;transition:border-color 0.2s}
+.photo-preview:hover{border-color:var(--accent)}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.photo-preview svg{opacity:0.25}
+.photo-upload-btn{padding:9px 18px;background:var(--card-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text-mid);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.photo-upload-btn:hover{border-color:var(--accent);color:var(--accent)}
+.photo-hint{font-size:12px;color:var(--text-light);margin-top:4px}
+#photoInput{display:none}
+
+.form-buttons{display:flex;gap:12px;margin-top:10px}
+.clear-btn{flex:0 0 auto;padding:15px 24px;background:transparent;color:var(--text-mid);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.clear-btn:hover{border-color:var(--danger);color:var(--danger)}
+.submit-btn{flex:1;padding:15px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.submit-btn:hover{opacity:0.9;transform:translateY(-1px)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;justify-content:center;align-items:center;padding:24px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card-bg);border-radius:var(--radius);max-width:520px;width:100%;max-height:85vh;overflow-y:auto;padding:32px;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:var(--body-bg);color:var(--text-mid);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.modal-close:hover{color:var(--text);background:var(--border)}
+.modal-avatar{width:88px;height:88px;border-radius:50%;margin:0 auto 18px;background:var(--accent-light);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--accent)}
+.modal-avatar img{width:100%;height:100%;object-fit:cover}
+.modal-name{text-align:center;font-size:20px;font-weight:800;margin-bottom:3px}
+.modal-role{text-align:center;font-size:13px;color:var(--text-mid);margin-bottom:22px}
+.modal-section{margin-bottom:18px}
+.modal-section-title{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.modal-section-content{font-size:14px;color:var(--text);line-height:1.65}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-grid-item{background:var(--body-bg);padding:12px;border-radius:var(--radius-sm)}
+.modal-grid-label{font-size:11px;color:var(--text-light);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px}
+.modal-grid-value{font-size:14px;font-weight:600;color:var(--text)}
+.modal-contact{display:flex;gap:10px;margin-top:22px}
+.modal-contact-btn{flex:1;padding:11px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;transition:all 0.2s}
+.modal-contact-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);padding:13px 26px;border-radius:40px;font-size:14px;font-weight:600;z-index:2000;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--success);color:#fff}
+.toast.error{background:var(--danger);color:#fff}
+
+@media(max-width:600px){
+  .header{padding:32px 20px 28px}
+  .header-logo{width:200px}
+  .nav-tabs{gap:4px;padding:12px 16px 10px}
+  .nav-tab{padding:9px 22px;font-size:13px}
+  .section{padding:20px 16px 48px}
+  .form-row{grid-template-columns:1fr}
+  .cards-grid{grid-template-columns:1fr}
+  .modal{padding:24px;margin:12px}
+  .modal-grid{grid-template-columns:1fr}
+  .modal-contact{flex-direction:column}
+  .form-buttons{flex-direction:column}
+  .clear-btn{order:2}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div style="font-size:22px;font-weight:900;letter-spacing:1px;color:var(--text);margin-bottom:14px">CRIE LAGOINHA</div>
+  <p class="header-desc">
+    Nossa comunidade de empreendedores que se apoiam, conectam e crescem juntos.
+    Cadastre seu perfil e encontre quem pode caminhar com você.
+  </p>
+</header>
+
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('home')">Início</button>
+  <button class="nav-tab" onclick="showSection('register')">Cadastrar</button>
+  <button class="nav-tab" onclick="showSection('directory')">Membros</button>
+</nav>
+
+<section id="home" class="section active">
+  <div class="rules-box" id="rulesBox">
+    <div class="rules-header" onclick="toggleRules()">
+      <span class="rules-icon">📋</span>
+      <span class="rules-title">Como funciona o diretório</span>
+      <span class="rules-arrow" id="rulesArrow">▾</span>
+    </div>
+    <div class="rules-content" id="rulesContent">
+      <div class="rules-section">
+        <div class="rules-section-title">✅ Como preencher</div>
+        <div class="rules-list">
+          <p>Clique em <strong>Cadastrar</strong> e preencha seus dados. Campos com <span style="color:var(--danger)">*</span> são obrigatórios.</p>
+          <p>Use seu <strong>nome completo</strong> (como as pessoas te conhecem na comunidade).</p>
+          <p>No telefone, coloque seu <strong>WhatsApp com código do país</strong> (ex: +61 4XX XXX XXX).</p>
+          <p>Em "O que fazia no Brasil" e "O que faz na Austrália", conte de forma breve e direta sua trajetória.</p>
+          <p>A foto é opcional, mas ajuda as pessoas a te reconhecerem. Use uma foto profissional ou que mostre bem seu rosto.</p>
+        </div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">⛔ O que não fazer</div>
+        <div class="rules-list">
+          <p>Não use nomes falsos ou informações inventadas.</p>
+          <p>Não cadastre outra pessoa sem autorização.</p>
+          <p>Não use o diretório para spam, vendas agressivas ou assédio.</p>
+          <p>Não compartilhe os dados de contato de outros membros fora da comunidade sem permissão.</p>
+        </div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-section-title">🤝 Nosso compromisso</div>
+        <div class="rules-list">
+          <p>Este diretório existe para fortalecer nossa comunidade. Trate cada contato com respeito, como irmão e parceiro de caminhada.</p>
+          <p>A liderança do CRie pode remover cadastros que não sigam essas orientações.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" style="margin-top:0">
+    <div class="empty-icon">🙌</div>
+    <div class="empty-title">Bem-vindo ao diretório do CRie!</div>
+    <div class="empty-desc">Cadastre seu perfil ou veja quem já faz parte da nossa comunidade de empreendedores.</div>
+    <button class="empty-btn" onclick="document.querySelectorAll('.nav-tab')[1].click()">Cadastrar meu perfil</button>
+  </div>
+</section>
+
+<section id="directory" class="section">
+  <div class="directory-header">
+    <h2 class="directory-title">Nossa Comunidade</h2>
+    <span class="member-count" id="memberCount"></span>
+    <div class="search-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar por nome, área, bairro..." oninput="filterCards()">
+    </div>
+  </div>
+
+  <div id="loadingState" class="loading-state">
+    <div class="spinner"></div>
+    <p>Carregando comunidade...</p>
+  </div>
+
+  <div id="emptyState" class="empty-state" style="display:none">
+    <div class="empty-icon">👥</div>
+    <div class="empty-title">Seja o primeiro a se cadastrar!</div>
+    <div class="empty-desc">Nossa comunidade está começando. Cadastre seu perfil e ajude outros empreendedores a te encontrar.</div>
+    <button class="empty-btn" onclick="document.querySelectorAll('.nav-tab')[1].click()">Cadastrar meu perfil</button>
+  </div>
+
+  <div class="cards-grid" id="cardsGrid"></div>
+</section>
+
+
+<section id="register" class="section">
+  <div class="form-container">
+    <h2 class="form-title">Faça parte</h2>
+    <p class="form-desc">Preencha suas informações para que outros membros do CRie possam te conhecer e se conectar com você.</p>
+
+    <div class="form-section-label">Informações pessoais</div>
+
+    <div class="form-group">
+      <label class="form-label">Nome completo <span class="req">*</span></label>
+      <input type="text" class="form-input" id="fNome" placeholder="Seu nome completo">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Foto de perfil</label>
+      <div class="photo-upload">
+        <div class="photo-preview" id="photoPreview" onclick="document.getElementById('photoInput').click()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <button type="button" class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">Escolher foto</button>
+          <p class="photo-hint">JPG ou PNG, máx. 2MB</p>
+        </div>
+      </div>
+      <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" onchange="handlePhoto(this)">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Telefone / WhatsApp <span class="req">*</span></label>
+        <input type="tel" class="form-input" id="fTelefone" placeholder="+61 4XX XXX XXX">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email <span class="req">*</span></label>
+        <input type="email" class="form-input" id="fEmail" placeholder="seu@email.com">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Bairro / Suburb <span class="req">*</span></label>
+        <input type="text" class="form-input" id="fBairro" placeholder="Ex: Manly, Chatswood...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nível de inglês</label>
+        <select class="form-select" id="fIngles">
+          <option value="">Selecione</option>
+          <option>Básico</option>
+          <option>Intermediário</option>
+          <option>Avançado</option>
+          <option>Fluente</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tempo na Austrália</label>
+      <input type="text" class="form-input" id="fTempoAustralia" placeholder="Ex: 2 anos, 6 meses...">
+    </div>
+
+    <hr class="form-divider">
+    <div class="form-section-label">Informações profissionais</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">O que faz atualmente <span class="req">*</span></label>
+        <input type="text" class="form-input" id="fOcupacaoAtual" placeholder="Cargo ou atividade atual">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Empresa / Negócio</label>
+        <input type="text" class="form-input" id="fEmpresa" placeholder="Nome da empresa ou próprio">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Especialidade</label>
+        <input type="text" class="form-input" id="fEspecialidade" placeholder="Ex: Marketing, Construção...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Anos de experiência</label>
+        <input type="text" class="form-input" id="fExperiencia" placeholder="Ex: 10 anos">
+      </div>
+    </div>
+
+    <hr class="form-divider">
+    <div class="form-section-label">Sua trajetória</div>
+
+    <div class="form-group">
+      <label class="form-label">O que fazia no Brasil</label>
+      <textarea class="form-textarea" id="fBrasilAntes" placeholder="Conte brevemente sua carreira ou negócio no Brasil..." rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">O que faz ou busca na Austrália</label>
+      <textarea class="form-textarea" id="fAustraliaAgora" placeholder="O que está construindo aqui, seus planos e objetivos..." rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Resumo profissional</label>
+      <textarea class="form-textarea" id="fResumo" placeholder="Um breve parágrafo sobre quem você é profissionalmente..." rows="4"></textarea>
+    </div>
+
+    <div class="form-buttons">
+      <button class="clear-btn" type="button" onclick="clearForm()">Limpar campos</button>
+      <button class="submit-btn" id="submitBtn" onclick="submitForm()">Salvar cadastro</button>
+    </div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var API_URL = 'https://script.google.com/macros/s/AKfycbwT9Ftw3jk8gPTQGCvXkB8ilWaMR9t2jD8_75jAD1T9h4pxlWcfNaSuq9uk-5suhAQp/exec';
+var SHEET_URL = 'https://docs.google.com/spreadsheets/d/1ItNVNIKFafzHfXuEVHrzbzsqNmm0cJ0ZJds3mbbgFUs/gviz/tq?tqx=out:json&sheet=cadastros';
+
+var allMembers = [];
+var photoBase64 = '';
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'directory') loadMembers();
+}
+
+function toggleRules() {
+  var content = document.getElementById('rulesContent');
+  var arrow = document.getElementById('rulesArrow');
+  content.classList.toggle('hidden');
+  arrow.classList.toggle('collapsed');
+}
+
+async function loadMembers() {
+  var grid = document.getElementById('cardsGrid');
+  var loading = document.getElementById('loadingState');
+  var empty = document.getElementById('emptyState');
+
+  loading.style.display = 'block';
+  empty.style.display = 'none';
+  grid.innerHTML = '';
+
+  try {
+    var res = await fetch(SHEET_URL + '&_=' + Date.now());
+    var text = await res.text();
+    var jsonText = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);?/);
+    if (!jsonText) throw new Error('Formato inesperado');
+    var json = JSON.parse(jsonText[1]);
+    var cols = json.table.cols;
+    var rows = json.table.rows;
+
+    var headers = cols.map(function(c){ return c.label || ''; });
+
+    allMembers = [];
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      var obj = {};
+      for (var j = 0; j < headers.length; j++) {
+        var cell = row.c[j];
+        obj[headers[j]] = cell ? (cell.v || '') : '';
+      }
+      if (obj.aprovado === 'NAO') continue;
+      allMembers.push(obj);
+    }
+    renderCards();
+  } catch (err) {
+    loading.style.display = 'none';
+    empty.style.display = 'block';
+  }
+}
+
+function renderCards() {
+  var grid = document.getElementById('cardsGrid');
+  var loading = document.getElementById('loadingState');
+  var empty = document.getElementById('emptyState');
+  var search = document.getElementById('searchInput').value.toLowerCase();
+
+  loading.style.display = 'none';
+
+  var filtered = allMembers;
+
+  if (search) {
+    filtered = filtered.filter(function(m) {
+      var h = [m.nome,m.bairro,m.especialidade,m.ocupacaoAtual,m.empresa,m.brasilAntes,m.australiaAgora].join(' ').toLowerCase();
+      return h.includes(search);
+    });
+  }
+
+  document.getElementById('memberCount').textContent = filtered.length === 1 ? '1 membro' : filtered.length + ' membros';
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(function(m) {
+    var initials = getInitials(m.nome);
+    var avatar = m.foto ? '<img src="'+m.foto+'" alt="'+esc(m.nome)+'" loading="lazy">' : initials;
+    var role = [m.ocupacaoAtual, m.empresa].filter(Boolean).join(' · ');
+    var detail = m.resumo || m.australiaAgora || m.brasilAntes || '';
+
+    return '<div class="member-card" onclick=\'openModal('+JSON.stringify(m).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+')\'>' +
+      '<div class="card-top">' +
+        '<div class="card-avatar">'+avatar+'</div>' +
+        '<div class="card-info">' +
+          '<div class="card-name">'+esc(m.nome)+'</div>' +
+          '<div class="card-role">'+esc(role)+'</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-tags">' +
+        (m.especialidade ? '<span class="card-tag">'+esc(m.especialidade)+'</span>' : '') +
+        (m.bairro ? '<span class="card-tag warm">'+esc(m.bairro)+'</span>' : '') +
+      '</div>' +
+      (detail ? '<div class="card-detail">'+esc(detail)+'</div>' : '') +
+      '<div class="card-footer">' +
+        '<span>'+(m.tempoAustralia ? esc(m.tempoAustralia)+' na Austrália' : '')+'</span>' +
+        '<a href="#" onclick="event.stopPropagation()">Ver perfil</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function filterCards() { renderCards(); }
+
+function openModal(m) {
+  var modal = document.getElementById('modalContent');
+  var initials = getInitials(m.nome);
+  var avatar = m.foto ? '<img src="'+m.foto+'" alt="'+esc(m.nome)+'">' : initials;
+
+  modal.innerHTML =
+    '<button class="modal-close" onclick="closeModal()">✕</button>' +
+    '<div class="modal-avatar">'+avatar+'</div>' +
+    '<div class="modal-name">'+esc(m.nome)+'</div>' +
+    '<div class="modal-role">'+esc([m.ocupacaoAtual,m.empresa].filter(Boolean).join(' · '))+'</div>' +
+    '<div class="modal-grid">' +
+      '<div class="modal-grid-item"><div class="modal-grid-label">Bairro</div><div class="modal-grid-value">'+esc(m.bairro||'—')+'</div></div>' +
+      '<div class="modal-grid-item"><div class="modal-grid-label">Inglês</div><div class="modal-grid-value">'+esc(m.ingles||'—')+'</div></div>' +
+      '<div class="modal-grid-item"><div class="modal-grid-label">Tempo na Austrália</div><div class="modal-grid-value">'+esc(m.tempoAustralia||'—')+'</div></div>' +
+      '<div class="modal-grid-item"><div class="modal-grid-label">Experiência</div><div class="modal-grid-value">'+esc(m.experiencia||'—')+'</div></div>' +
+    '</div>' +
+    (m.especialidade ? '<div class="modal-section" style="margin-top:18px"><div class="modal-section-title">Especialidade</div><div class="modal-section-content">'+esc(m.especialidade)+'</div></div>' : '') +
+    (m.brasilAntes ? '<div class="modal-section"><div class="modal-section-title">No Brasil</div><div class="modal-section-content">'+esc(m.brasilAntes)+'</div></div>' : '') +
+    (m.australiaAgora ? '<div class="modal-section"><div class="modal-section-title">Na Austrália</div><div class="modal-section-content">'+esc(m.australiaAgora)+'</div></div>' : '') +
+    (m.resumo ? '<div class="modal-section"><div class="modal-section-title">Resumo profissional</div><div class="modal-section-content">'+esc(m.resumo)+'</div></div>' : '') +
+    '<div class="modal-contact">' +
+      (m.email ? '<a class="modal-contact-btn" href="mailto:'+esc(m.email)+'">Enviar email</a>' : '') +
+      (m.telefone ? '<a class="modal-contact-btn" href="https://wa.me/'+String(m.telefone).replace(/[^0-9]/g,'')+'" target="_blank">WhatsApp</a>' : '') +
+    '</div>';
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+
+function handlePhoto(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 2*1024*1024) { showToast('Arquivo muito grande. Máximo 2MB.','error'); return; }
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  var img = new Image();
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    img.onload = function() {
+      var size = 200; canvas.width = size; canvas.height = size;
+      var min = Math.min(img.width,img.height);
+      ctx.drawImage(img,(img.width-min)/2,(img.height-min)/2,min,min,0,0,size,size);
+      photoBase64 = canvas.toDataURL('image/jpeg',0.7);
+      document.getElementById('photoPreview').innerHTML = '<img src="'+photoBase64+'" alt="Preview">';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitForm() {
+  var nome = document.getElementById('fNome').value.trim();
+  var telefone = document.getElementById('fTelefone').value.trim();
+  var email = document.getElementById('fEmail').value.trim();
+  var bairro = document.getElementById('fBairro').value.trim();
+  var ocupacaoAtual = document.getElementById('fOcupacaoAtual').value.trim();
+
+  if (!nome||!telefone||!email||!bairro||!ocupacaoAtual) { showToast('Preencha os campos obrigatórios.','error'); return; }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Enviando...';
+
+  var data = {
+    nome:nome, telefone:telefone, email:email, bairro:bairro,
+    ingles:document.getElementById('fIngles').value,
+    tempoAustralia:document.getElementById('fTempoAustralia').value.trim(),
+    ocupacaoAtual:ocupacaoAtual,
+    empresa:document.getElementById('fEmpresa').value.trim(),
+    especialidade:document.getElementById('fEspecialidade').value.trim(),
+    experiencia:document.getElementById('fExperiencia').value.trim(),
+    brasilAntes:document.getElementById('fBrasilAntes').value.trim(),
+    australiaAgora:document.getElementById('fAustraliaAgora').value.trim(),
+    resumo:document.getElementById('fResumo').value.trim(),
+    foto:photoBase64
+  };
+
+  try {
+    await fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    showToast('Cadastro realizado com sucesso!','success');
+    clearForm();
+    setTimeout(function(){document.querySelectorAll('.nav-tab')[2].click()},1500);
+  } catch(err) { showToast('Erro ao enviar. Tente novamente.','error'); }
+  finally { btn.disabled=false; btn.textContent='Salvar cadastro'; }
+}
+
+function clearForm() {
+  ['fNome','fTelefone','fEmail','fBairro','fIngles','fTempoAustralia','fOcupacaoAtual','fEmpresa','fEspecialidade','fExperiencia','fBrasilAntes','fAustraliaAgora','fResumo'].forEach(function(id){document.getElementById(id).value=''});
+  photoBase64='';
+  document.getElementById('photoPreview').innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+}
+
+function getInitials(name){if(!name)return'?';return name.split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0]}).join('').toUpperCase()}
+function esc(str){if(!str)return'';var d=document.createElement('div');d.textContent=String(str);return d.innerHTML}
+function showToast(msg,type){var t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(function(){t.classList.remove('show')},3500)}
+
+loadMembers();
+</script>
+
+</body>
+</html>
